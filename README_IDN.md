@@ -335,3 +335,6 @@ PDF siap digunakan sebagai konteks AI.
 
 Penggunaan internal
 Sesuaikan dengan kebijakan organisasi
+
+## Kredit
+Dikembangkan oleh Kukuh Tripamungkas Wicaksono (Kukuh TW) https://www.linkedin.com/in/kukuhtw/ 2025 - 2026
