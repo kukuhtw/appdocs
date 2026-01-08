@@ -7,6 +7,69 @@
 
 PHP MySQL
 
+## The Problem
+
+Documentation rarely stays current.
+
+Code changes every day.
+Documentation freezes in time.
+
+Developers focus on shipping features.
+Documentation becomes an afterthought.
+
+Common problems appear quickly.
+
+Documentation written once.
+Never updated again.
+
+Docs live outside the real codebase.
+Docs drift away from reality.
+
+Exporting documentation requires extra steps.
+Extra tools. Extra effort. Extra discipline.
+
+When AI tools are used, the problem grows.
+
+AI receives outdated context.
+AI guesses structure.
+AI hallucinates behavior.
+
+The real codebase stays invisible.
+
+
+
+## The Need
+
+Developers need documentation that follows code.
+
+No new workflow.
+No new editor.
+No risk to the repository.
+
+Documentation should grow quietly.
+Documentation should reflect real code.
+Documentation should be export ready anytime.
+
+
+
+## The Solution
+
+### appDocs
+
+appDocs is a lightweight documentation snapshot tool.
+
+It generates PDF documentation from your actual codebase.
+It never interferes with development.
+
+You keep coding in your IDE.
+Your repository stays untouched.
+
+appDocs quietly captures selected code snapshots.
+Those snapshots become structured documentation.
+
+Whenever needed, a clean PDF is ready.
+
+
 ## Overview
 
 App Content Manager is an internal documentation and code snapshot tool built with PHP and MySQL. It stores application source code in a database and generates print friendly documentation that can be exported as PDF.
