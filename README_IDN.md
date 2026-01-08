@@ -1,282 +1,280 @@
 
+---
 
----![App Content Manager Screenshot](1.png)
+![App Content Manager Screenshot](1.png)
 
-
-# appDocs – (App Content Manager)
+# appDocs (App Content Manager)
 
 PHP MySQL
 
-## Overview
+## Gambaran Umum
 
-App Content Manager is an internal documentation and code snapshot tool built with PHP and MySQL. It stores application source code in a database and generates print friendly documentation that can be exported as PDF.
+App Content Manager adalah tools dokumentasi internal sekaligus snapshot code berbasis PHP dan MySQL. Tools ini menyimpan source code aplikasi ke dalam database lalu menghasilkan dokumentasi ramah cetak yang dapat diekspor ke PDF.
 
-The exported PDF is intentionally designed to be consumed by AI code generators so the AI can understand your real codebase structure, module boundaries, and implementation patterns.
+PDF hasil export dirancang khusus agar mudah dipahami oleh AI code generator. AI dapat membaca struktur codebase asli, batas modul, pola implementasi, serta arsitektur aplikasi secara nyata.
 
-This tool is especially useful for large codebases, legacy systems, monorepos, and multi application environments.
----
-
-## How appDocs Works
-
-Simple Documentation That Evolves with Your Code
-
-appDocs is designed so documentation does not interrupt development.
-Documentation is created **alongside coding**, not as a separate task.
-
-The workflow is intentionally minimal
-you keep coding in your real codebase
-appDocs stores selected snapshots in the database
-PDF documentation can be generated at any time
+Tools ini cocok untuk codebase besar, sistem legacy, monorepo, serta lingkungan multi aplikasi.
 
 ---
 
-## Core Concept
+## Cara Kerja appDocs
 
-appDocs is **not a code editor** and **not a version control system**.
-It acts as a **documentation snapshot layer** on top of your existing codebase.
+Dokumentasi Sederhana yang Mengikuti Proses Coding
 
-What appDocs stores
-source code snapshots
-file metadata
-application and module structure
+appDocs dibuat agar dokumentasi tidak mengganggu proses development. Dokumentasi berjalan bersamaan dengan aktivitas coding sehari hari.
 
-What appDocs never touches
-physical source files
-git repositories
-deployment environments
+Alur kerjanya ringkas
+developer tetap coding di codebase asli
+appDocs menyimpan snapshot terpilih ke database
+PDF dokumentasi dapat dibuat kapan saja
 
 ---
 
-## Step by Step Workflow
+## Konsep Inti
 
-### 1. Code as Usual
+appDocs bukan editor code.
+appDocs bukan version control system.
 
-Developers continue working in their IDE and repository.
-No workflow changes are required.
+appDocs berperan sebagai **lapisan snapshot dokumentasi** di atas codebase yang sudah ada.
 
----
+Yang disimpan oleh appDocs
+snapshot source code
+metadata file
+struktur aplikasi serta modul
 
-### 2. Copy Physical Code into Snapshot Content
-
-When a file becomes relevant for documentation, refactoring, or AI context, the developer copies the file content from the physical codebase into appDocs.
-
-At this stage
-the file content is stored in the database
-file path is recorded
-the file is linked to an App and Module
-
-Only selected files are documented.
-This keeps documentation focused and intentional.
+Yang tidak pernah disentuh
+file fisik
+repository git
+lingkungan deployment
 
 ---
 
-### 3. Sync Code Changes
+## Alur Kerja Bertahap
 
-When the physical code changes, developers run the **Sync Code** action.
+### 1. Coding Seperti Biasa
 
-Sync performs
-file existence validation
-metadata updates such as size and modification time
-change detection indicators
-
-If the file has changed, the developer updates the snapshot by copying the latest version into appDocs.
-
-No filesystem writes occur.
-All updates remain database only.
+Developer tetap bekerja menggunakan IDE serta repository yang sama.
+Tidak ada perubahan workflow.
 
 ---
 
-### 4. Snapshots Are Always Export Ready
+### 2. Menyalin Code Fisik ke Snapshot Content
 
-Every stored snapshot instantly becomes part of the documentation set.
+Saat sebuah file dianggap penting untuk dokumentasi, refactoring, atau konteks AI, developer menyalin isi file dari codebase fisik ke appDocs.
 
-No build process
-no compilation step
-no additional tooling
+Pada tahap ini
+isi file disimpan ke database
+path file dicatat
+file dihubungkan ke App serta Module
 
-The documentation state always reflects the current snapshot selection.
+Hanya file terpilih yang didokumentasikan.
+Dokumentasi menjadi fokus serta relevan.
 
 ---
 
-### 5. Generate PDF Anytime
+### 3. Sinkronisasi Perubahan Code
 
-When needed, appDocs assembles a print friendly documentation view from the snapshot database.
+Saat code fisik berubah, developer menjalankan fitur **Sync Code**.
 
-The exported document contains
-application and module structure
-file listings
-source code snapshots
-AI generated summaries
+Proses sync mencakup
+validasi keberadaan file
+pembaruan metadata ukuran serta waktu modifikasi
+indikasi perubahan file
 
-PDF generation uses browser print
-Ctrl + P
+Jika file berubah, developer memperbarui snapshot dengan menyalin versi terbaru ke appDocs.
+
+Tidak ada penulisan ke filesystem.
+Seluruh perubahan terjadi di database.
+
+---
+
+### 4. Snapshot Selalu Siap Diekspor
+
+Setiap snapshot yang tersimpan langsung menjadi bagian dari dokumentasi.
+
+Tidak perlu build
+tidak perlu compile
+tidak perlu tools tambahan
+
+Status dokumentasi selalu mengikuti snapshot terbaru.
+
+---
+
+### 5. Generate PDF Kapan Saja
+
+Saat dibutuhkan, appDocs menyusun tampilan dokumentasi ramah cetak berdasarkan snapshot database.
+
+Isi dokumen meliputi
+struktur App serta Module
+daftar file
+snapshot source code
+ringkasan hasil AI
+
+PDF dibuat melalui browser print
+Ctrl P
 Save as PDF
 
-The result is a static, consistent documentation package ready for AI consumption.
+Hasilnya berupa dokumen statis konsisten siap dipakai sebagai konteks AI.
 
 ---
 
-## Why This Approach Works
+## Alasan Pendekatan Ini Efektif
 
-### Documentation Follows Developer Rhythm
+### Dokumentasi Mengikuti Ritme Developer
 
-Only meaningful files are documented.
-No pressure to document everything.
-
----
-
-### Intentional Snapshots
-
-Snapshots are created consciously by developers, not automatically.
-
-This results in documentation that is
-clean
-focused
-AI friendly
+Hanya file bermakna yang didokumentasikan.
+Tidak ada tekanan mendokumentasikan seluruh codebase.
 
 ---
 
-### Safe for Any Environment
+### Snapshot Dibuat Secara Sadar
 
-Because appDocs never modifies physical files, it is safe to use in
-local environments
-staging systems
-production codebases
+Snapshot dibuat berdasarkan keputusan developer, bukan proses otomatis.
 
----
-
-## Workflow Summary
-
-Develop code normally
-Copy important files into snapshot content
-Run sync to validate changes
-Update snapshots when code evolves
-Generate PDF whenever needed
+Dokumentasi menjadi
+bersih
+fokus
+ramah AI
 
 ---
 
-With this model, documentation becomes a natural byproduct of development.
-appDocs turns live coding activity into structured, AI ready documentation without friction.
+### Aman di Semua Lingkungan
 
-
----
-
-## Primary Goals
-
-* Centralize application documentation
-* Preserve code snapshots without touching physical files
-* Provide structured context for AI code generators
-* Reduce AI hallucination during code generation
-* Improve refactoring accuracy on legacy systems
-* Support faster developer onboarding
+Karena tidak memodifikasi file fisik, appDocs aman digunakan di
+local
+staging
+production
 
 ---
 
-## Key Features
+## Ringkasan Alur Kerja
 
-### Application Management
-
-* Create Read Update Delete Apps
-* Define application root paths
-* Validate file existence in filesystem
-* Store file metadata size modification time hash
-
-### Module Management
-
-* Create Read Update Delete Modules per App
-* Logical grouping of files by responsibility
-* Representation of architecture layers
-
-### Code Content Management
-
-* Create Read Update Delete code content
-* Relationship between App Module and File Path
-* Store source code in database
-* Store AI generated summaries
-* View file details
-
-### Browsing and Filtering
-
-* View all stored content
-* Filter by App
-* Filter by Module
-* Useful for audits and code exploration
-
-### Documentation Export
-
-* Export to print friendly HTML
-* Save as PDF using browser print
-* No third party PDF libraries
-* Optimized as AI context document
+Coding tetap berjalan
+Salin file penting ke snapshot database
+Jalankan sync untuk validasi
+Perbarui snapshot saat code berubah
+Generate PDF kapan pun diperlukan
 
 ---
 
-## Data Architecture Concept
+Dengan pendekatan ini, dokumentasi menjadi hasil samping alami dari proses development.
+appDocs mengubah aktivitas coding harian menjadi dokumentasi terstruktur siap dipahami AI tanpa friksi.
+
+---
+
+## Tujuan Utama
+
+* Sentralisasi dokumentasi aplikasi
+* Menyimpan snapshot code tanpa menyentuh file fisik
+* Menyediakan konteks terstruktur untuk AI code generator
+* Mengurangi halusinasi AI saat generate code
+* Meningkatkan akurasi refactoring sistem legacy
+* Mempercepat proses onboarding developer
+
+---
+
+## Fitur Utama
+
+### Manajemen Aplikasi
+
+* Create Read Update Delete App
+* Penentuan root path aplikasi
+* Validasi keberadaan file di filesystem
+* Penyimpanan metadata ukuran waktu modifikasi hash
+
+### Manajemen Modul
+
+* Create Read Update Delete Modul per App
+* Pengelompokan file berdasarkan tanggung jawab
+* Representasi layer arsitektur
+
+### Manajemen Konten Code
+
+* Create Read Update Delete konten code
+* Relasi App Modul serta File Path
+* Penyimpanan source code ke database
+* Penyimpanan ringkasan hasil AI
+* Tampilan detail file
+
+### Browsing serta Filtering
+
+* Melihat seluruh konten tersimpan
+* Filter berdasarkan App
+* Filter berdasarkan Modul
+* Berguna untuk audit serta eksplorasi code
+
+### Export Dokumentasi
+
+* Export ke HTML ramah cetak
+* Simpan sebagai PDF melalui browser
+* Tanpa library PDF pihak ketiga
+* Dioptimalkan sebagai dokumen konteks AI
+
+---
+
+## Konsep Arsitektur Data
 
 * **App**
-  Represents a single application or service
-  Has a defined root path
+  Representasi satu aplikasi atau service
+  Memiliki root path terdefinisi
 
 * **Module**
-  Logical grouping within an App
-  Example authentication billing reporting
+  Kelompok logis dalam App
+  Contoh authentication billing reporting
 
 * **Content**
-  File snapshot
-  File path title source code summary
+  Snapshot file
+  Path file judul source code ringkasan
 
-All data is stored in the database.
-Physical source code files are never modified.
-
----
-
-## Role of PDF in AI Code Generation
-
-The PDF export acts as an **AI context package**.
-
-The document includes:
-
-* Directory structure
-* App Module Content relationships
-* Source code snapshots
-* AI generated summaries per file
-
-Direct benefits:
-
-* AI understands the codebase tree
-* AI follows existing naming conventions
-* AI respects architectural patterns
-* AI generates more relevant patches
-* AI operates more safely on legacy code
-
-The PDF can be uploaded to:
-
-* ChatGPT
-* Claude
-* Gemini
-* Internal AI code generators
+Seluruh data disimpan di database.
+File fisik tidak pernah dimodifikasi.
 
 ---
 
-## Installation
+## Peran PDF dalam AI Code Generation
 
-### Requirements
+PDF hasil export berfungsi sebagai **paket konteks AI**.
 
-* PHP 7.4 or newer
-* MySQL or MariaDB
-* Apache or Nginx web server
+Isi dokumen mencakup
+struktur direktori
+relasi App Modul serta Content
+snapshot source code
+ringkasan AI per file
 
-### Installation Steps
+Manfaat langsung
+AI memahami struktur codebase
+AI mengikuti konvensi penamaan
+AI menghormati pola arsitektur
+AI menghasilkan patch lebih relevan
+AI bekerja lebih aman pada sistem legacy
 
-1. Create a MySQL database named `appdocs`
-2. Import `schema.sql`
-3. Update database credentials in `config/db.php`
-4. Place the project folder in your web root
-5. Open `public/index.php` in your browser
+PDF dapat diunggah ke
+ChatGPT
+Claude
+Gemini
+AI internal perusahaan
 
 ---
 
-## Project Structure
+## Instalasi
+
+### Kebutuhan Sistem
+
+* PHP 7.4 atau lebih baru
+* MySQL atau MariaDB
+* Web server Apache atau Nginx
+
+### Langkah Instalasi
+
+1. Buat database MySQL bernama `appdocs`
+2. Import file `schema.sql`
+3. Atur kredensial database di `config/db.php`
+4. Letakkan folder project di web root
+5. Buka `public/index.php` melalui browser
+
+---
+
+## Struktur Project
 
 ```
 appdocs/
@@ -297,45 +295,43 @@ appdocs/
 
 ---
 
-## How PDF Export Works
+## Cara Kerja Export PDF
 
-1. Open Export menu
-2. Apply filters if needed
-3. Print friendly page opens
-4. Press Ctrl P
-5. Select Save as PDF
+1. Buka menu Export
+2. Terapkan filter bila perlu
+3. Halaman print friendly terbuka
+4. Tekan Ctrl P
+5. Pilih Save as PDF
 
-The generated PDF is ready to be used as AI context.
-
----
-
----![PDF print Screenshot](2.png)
+PDF siap digunakan sebagai konteks AI.
 
 ---
 
-## Important Notes
-
-* No third party PDF libraries are used
-* All exports rely on browser print
-* Editing content only updates database records
-* No filesystem write operations are performed
-* Safe to use on production codebases
+![PDF print Screenshot](2.png)
 
 ---
 
-## Ideal Use Cases
+## Catatan Penting
 
-* Internal engineering documentation
-* Legacy system migration
-* AI assisted refactoring
-* AI driven development workflows
-* Technical knowledge base
+* Tidak menggunakan library PDF pihak ketiga
+* Seluruh export bergantung pada browser print
+* Edit konten hanya memengaruhi database
+* Tidak ada operasi tulis ke filesystem
+* Aman digunakan pada codebase production
+
+---
+
+## Contoh Penggunaan Ideal
+
+* Dokumentasi engineering internal
+* Migrasi sistem legacy
+* Refactoring berbantuan AI
+* Workflow development berbasis AI
+* Basis pengetahuan teknis
 
 ---
 
-## License
+## Lisensi
 
-Internal use
-Adjust as needed for your organization
-
----
+Penggunaan internal
+Sesuaikan dengan kebijakan organisasi
