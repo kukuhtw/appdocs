@@ -338,4 +338,10 @@ The generated PDF is ready to be used as AI context.
 Internal use
 Adjust as needed for your organization
 
+## Credit
+
+Developed by Kukuh Tripamungkas Wicaksono (Kukuh TW)
+[https://www.linkedin.com/in/kukuhtw/](https://www.linkedin.com/in/kukuhtw/)
+2025–2026
+
 ---
