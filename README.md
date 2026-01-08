@@ -166,7 +166,7 @@ The generated PDF is ready to be used as AI context.
 
 ---
 
-[PDF print Screenshot](2.png)
+---![PDF print Screenshot](2.png)
 
 ---
 
