@@ -7,9 +7,66 @@
 
 PHP MySQL
 
+# Masalah
+
+Dokumentasi jarang tetap terbaru.
+
+Kode berubah setiap hari.
+Dokumentasi berhenti di masa lalu.
+
+Developer fokus merilis fitur.
+Dokumentasi jadi prioritas terakhir.
+
+Masalah umum muncul cepat.
+
+Dokumentasi ditulis sekali.
+Tidak pernah diperbarui.
+
+Dokumen berada di luar codebase nyata.
+Isi makin jauh dari kondisi sebenarnya.
+
+Ekspor dokumentasi butuh langkah tambahan.
+Tool tambahan. Upaya tambahan. Disiplin tambahan.
+
+Saat AI digunakan masalah membesar.
+
+AI menerima konteks usang.
+AI menebak struktur.
+AI berhalusinasi perilaku.
+
+Codebase asli tidak terlihat.
+
+# Kebutuhan
+
+Developer butuh dokumentasi yang mengikuti kode.
+
+Tanpa workflow baru.
+Tanpa editor baru.
+Tanpa risiko ke repository.
+
+Dokumentasi tumbuh diam diam.
+Dokumentasi mencerminkan kode nyata.
+Dokumentasi siap diekspor kapan saja.
+
+# Solusi
+appDocs (App Content Manager)
+
+appDocs adalah tool snapshot dokumentasi yang ringan.
+
+Menghasilkan dokumentasi PDF dari codebase asli.
+Tidak mengganggu proses development.
+
+Developer tetap coding di IDE.
+Repository tetap utuh.
+
+appDocs menangkap snapshot kode terpilih secara senyap.
+Snapshot menjadi dokumentasi terstruktur.
+
+Saat dibutuhkan PDF bersih selalu siap.
+
 ## Gambaran Umum
 
-App Content Manager adalah tools dokumentasi internal sekaligus snapshot code berbasis PHP dan MySQL. Tools ini menyimpan source code aplikasi ke dalam database lalu menghasilkan dokumentasi ramah cetak yang dapat diekspor ke PDF.
+appDocs (App Content Manager) adalah tools dokumentasi internal sekaligus snapshot code berbasis PHP dan MySQL. Tools ini menyimpan source code aplikasi ke dalam database lalu menghasilkan dokumentasi ramah cetak yang dapat diekspor ke PDF.
 
 PDF hasil export dirancang khusus agar mudah dipahami oleh AI code generator. AI dapat membaca struktur codebase asli, batas modul, pola implementasi, serta arsitektur aplikasi secara nyata.
 
