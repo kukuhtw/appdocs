@@ -105,6 +105,73 @@ function openai_chat(array $messages, array $opt = []): array
   return ["ok" => true, "text" => $text, "raw" => $json];
 }
 
+function summarize_latest_pending(PDO $pdo, int $limit = 5): array
+{
+  $limit = max(1, min(20, $limit));
+
+  $st = $pdo->query("
+    SELECT id, file_path, title, content
+    FROM contentcode
+    WHERE summarycode IS NULL OR TRIM(summarycode) = ''
+    ORDER BY COALESCE(updated_at, created_at) DESC, id DESC
+    LIMIT {$limit}
+  ");
+  $targets = $st->fetchAll();
+
+  $upd = $pdo->prepare("UPDATE contentcode SET summarycode=?, updated_at=NOW() WHERE id=?");
+
+  $updated = 0;
+  $failed = 0;
+  $skipped = 0;
+  $errors = [];
+  $updatedFiles = [];
+
+  foreach ($targets as $row) {
+    $cid = (int)($row["id"] ?? 0);
+    $filePath = trim((string)($row["file_path"] ?? ""));
+    $title = trim((string)($row["title"] ?? ""));
+    $content = trim((string)($row["content"] ?? ""));
+
+    if ($cid <= 0 || $content === "") {
+      $skipped++;
+      continue;
+    }
+
+    $messages = build_summary_prompt($filePath, $title, $content);
+    $resp = openai_chat($messages, [
+      "model" => "gpt-4o-mini",
+      "temperature" => 0.2,
+      "max_tokens" => 900,
+    ]);
+
+    if (!$resp["ok"]) {
+      $failed++;
+      $errors[] = ($filePath !== "" ? $filePath : ("ID " . $cid)) . ": " . (string)($resp["error"] ?? "unknown");
+      continue;
+    }
+
+    $summary = trim((string)$resp["text"]);
+    if ($summary === "") {
+      $failed++;
+      $errors[] = ($filePath !== "" ? $filePath : ("ID " . $cid)) . ": AI output kosong";
+      continue;
+    }
+
+    $upd->execute([$summary, $cid]);
+    $updated++;
+    $updatedFiles[] = $filePath !== "" ? $filePath : ("ID " . $cid);
+  }
+
+  return [
+    "selected" => count($targets),
+    "updated" => $updated,
+    "failed" => $failed,
+    "skipped" => $skipped,
+    "errors" => $errors,
+    "updated_files" => $updatedFiles,
+  ];
+}
+
 function norm_sep(string $p): string
 {
   $p = str_replace("\\", "/", $p);
@@ -146,7 +213,7 @@ $orderBy = $allowedSort[$sort] ?? "c.updated_at";
 $orderDir = $dir === "asc" ? "ASC" : "DESC";
 
 $page = max(1, get_int("page"));
-$perPage = 50;
+$perPage = 150;
 $offset = ($page - 1) * $perPage;
 
 $apps = $pdo->query("SELECT id, app_name, root_path FROM appsname ORDER BY updated_at DESC")->fetchAll();
@@ -180,6 +247,25 @@ if ($app_id_filter > 0) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
+  if (post_str("mode") === "bulk_summary_5") {
+    try {
+      $res = summarize_latest_pending($pdo, 5);
+
+      $msg = "Bulk summary selesai. selected {$res["selected"]}, updated {$res["updated"]}, failed {$res["failed"]}, skipped {$res["skipped"]}";
+      if (!empty($res["updated_files"])) {
+        $msg .= ". Updated files: " . implode(", ", $res["updated_files"]);
+      }
+      if (!empty($res["errors"])) {
+        $msg .= ". " . implode(" | ", array_slice($res["errors"], 0, 3));
+      }
+      flash_set($msg);
+    } catch (Throwable $e) {
+      flash_set("Bulk summary gagal: " . $e->getMessage());
+    }
+
+    redirect("contents.php?app_id={$app_id_filter}&module_id={$module_id_filter}&page={$page}&q=" . urlencode($q) . "&sort=" . urlencode($sort) . "&dir=" . urlencode($dir));
+  }
+
   $app_id = (int)post_str("app_id");
   $module_id = (int)post_str("module_id");
   $file_path = trim(post_str("file_path"));
@@ -307,6 +393,18 @@ $st = $pdo->prepare("SELECT COUNT(*) AS cnt {$baseSql} {$whereSql}");
 $st->execute($params);
 $total = (int)($st->fetch()["cnt"] ?? 0);
 $totalPages = max(1, (int)ceil($total / $perPage));
+
+$st = $pdo->prepare("
+  SELECT
+    SUM(CASE WHEN c.summarycode IS NULL OR TRIM(c.summarycode) = '' THEN 1 ELSE 0 END) AS empty_cnt,
+    SUM(CASE WHEN c.summarycode IS NOT NULL AND TRIM(c.summarycode) <> '' THEN 1 ELSE 0 END) AS filled_cnt
+  {$baseSql}
+  {$whereSql}
+");
+$st->execute($params);
+$sumStat = $st->fetch() ?: [];
+$summaryEmptyCount = (int)($sumStat["empty_cnt"] ?? 0);
+$summaryFilledCount = (int)($sumStat["filled_cnt"] ?? 0);
 
 if ($page > $totalPages) {
   $page = $totalPages;
@@ -479,9 +577,20 @@ $flash = flash_get();
           <?php endif; ?>
 
           <span class="pill"><?= (int)$total ?> rows</span>
+          <span class="pill ok">summary terisi <?= (int)$summaryFilledCount ?></span>
+          <span class="pill miss">summary kosong <?= (int)$summaryEmptyCount ?></span>
           <span class="pill">page <?= (int)$page ?>/<?= (int)$totalPages ?></span>
         </div>
       </div>
+    </form>
+  </div>
+
+  <div class="card">
+    <h3>Automation</h3>
+    <div class="small" style="margin-bottom:10px">Summary 5 file terbaru dengan summary kosong di table contentcode.</div>
+    <form method="post" onsubmit="return confirm('Jalankan summary untuk 5 file terbaru yang summarycode masih kosong?')">
+      <input type="hidden" name="mode" value="bulk_summary_5">
+      <button class="btn primary" type="submit">Eksekusi Summary 5 File</button>
     </form>
   </div>
 
