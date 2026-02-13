@@ -70,7 +70,7 @@ function is_allowed_ext(string $path): bool {
 
   $allow = [
     // backend
-    "php","phtml","inc","py","sql","rs",
+    "php","phtml","inc","py","sql","rs","","java",
 
     // frontend
     "html","htm","js","ts","tsx","jsx",
@@ -78,6 +78,7 @@ function is_allowed_ext(string $path): bool {
     // docs config
     "md","txt","json","yml","yaml",
   ];
+
 
   return in_array($ext, $allow, true);
 }
