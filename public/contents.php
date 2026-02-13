@@ -105,17 +105,31 @@ function openai_chat(array $messages, array $opt = []): array
   return ["ok" => true, "text" => $text, "raw" => $json];
 }
 
-function summarize_latest_pending(PDO $pdo, int $limit = 5): array
+function summarize_latest_pending(PDO $pdo, int $limit = 5, int $appId = 0, int $moduleId = 0): array
 {
   $limit = max(1, min(20, $limit));
 
-  $st = $pdo->query("
+  $where = ["(summarycode IS NULL OR TRIM(summarycode) = '')"];
+  $params = [];
+
+  if ($appId > 0) {
+    $where[] = "app_id = ?";
+    $params[] = $appId;
+  }
+  if ($moduleId > 0) {
+    $where[] = "module_id = ?";
+    $params[] = $moduleId;
+  }
+
+  $sql = "
     SELECT id, file_path, title, content
     FROM contentcode
-    WHERE summarycode IS NULL OR TRIM(summarycode) = ''
+    WHERE " . implode(" AND ", $where) . "
     ORDER BY COALESCE(updated_at, created_at) DESC, id DESC
     LIMIT {$limit}
-  ");
+  ";
+  $st = $pdo->prepare($sql);
+  $st->execute($params);
   $targets = $st->fetchAll();
 
   $upd = $pdo->prepare("UPDATE contentcode SET summarycode=?, updated_at=NOW() WHERE id=?");
@@ -249,7 +263,9 @@ if ($app_id_filter > 0) {
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
   if (post_str("mode") === "bulk_summary_5") {
     try {
-      $res = summarize_latest_pending($pdo, 5);
+      $bulkAppId = (int)post_str("bulk_app_id");
+      $bulkModuleId = (int)post_str("bulk_module_id");
+      $res = summarize_latest_pending($pdo, 5, $bulkAppId, $bulkModuleId);
 
       $msg = "Bulk summary selesai. selected {$res["selected"]}, updated {$res["updated"]}, failed {$res["failed"]}, skipped {$res["skipped"]}";
       if (!empty($res["updated_files"])) {
@@ -590,6 +606,8 @@ $flash = flash_get();
     <div class="small" style="margin-bottom:10px">Summary 5 file terbaru dengan summary kosong di table contentcode.</div>
     <form method="post" onsubmit="return confirm('Jalankan summary untuk 5 file terbaru yang summarycode masih kosong?')">
       <input type="hidden" name="mode" value="bulk_summary_5">
+      <input type="hidden" name="bulk_app_id" value="<?= (int)$app_id_filter ?>">
+      <input type="hidden" name="bulk_module_id" value="<?= (int)$module_id_filter ?>">
       <button class="btn primary" type="submit">Eksekusi Summary 5 File</button>
     </form>
   </div>
