@@ -68,15 +68,15 @@ function dt_from_ts(int $ts): string {
 function is_allowed_ext(string $path): bool {
   $ext = strtolower((string)pathinfo($path, PATHINFO_EXTENSION));
 
-  $allow = [
+ $allow = [
     // backend
-    "php","phtml","inc","py","sql","rs","","java",
+    "php","phtml","inc","py","sql","rs","","java","ts","go","cs","cpp","c","h","sh","bat",
 
     // frontend
-    "html","htm","js","ts","tsx","jsx",
+    "html","htm","js","ts","tsx","jsx","css","scss","less","vue","svelte","dart",
 
     // docs config
-    "md","txt","json","yml","yaml",
+    "md","txt","json","yml","yaml","toml","xml","cfg","ini","conf",
   ];
 
 
