@@ -609,7 +609,7 @@ $flash = flash_get();
   <div class="card">
     <h3>Automation</h3>
     <div class="small" style="margin-bottom:10px">Summary file terbaru dengan summary kosong di table contentcode. Bisa pilih 5, 10, 15, atau 20 file sekaligus.</div>
-    <form method="post" onsubmit="var n=this.bulk_limit.value; return confirm('Jalankan summary untuk ' + n + ' file terbaru yang summarycode masih kosong?');">
+    <form method="post" data-bulk-summary-form>
       <input type="hidden" name="mode" value="bulk_summary">
       <input type="hidden" name="bulk_app_id" value="<?= (int)$app_id_filter ?>">
       <input type="hidden" name="bulk_module_id" value="<?= (int)$module_id_filter ?>">
@@ -620,7 +620,7 @@ $flash = flash_get();
         <option value="15">15 file</option>
         <option value="20">20 file</option>
       </select>
-      <button class="btn primary" type="submit">Eksekusi Summary</button>
+      <button class="btn primary" type="submit" data-bulk-summary-button>Eksekusi Summary</button>
     </form>
   </div>
 
@@ -866,6 +866,33 @@ $flash = flash_get();
 
 <script>
 (function(){
+  var bulkSummaryForm = document.querySelector("[data-bulk-summary-form]");
+  var bulkSummaryButton = document.querySelector("[data-bulk-summary-button]");
+  var bulkSummaryButtonText = bulkSummaryButton ? bulkSummaryButton.textContent : "";
+
+  function resetBulkSummaryButton() {
+    if (!bulkSummaryButton) return;
+    bulkSummaryButton.disabled = false;
+    bulkSummaryButton.textContent = bulkSummaryButtonText || "Eksekusi Summary";
+  }
+
+  if (bulkSummaryForm && bulkSummaryButton) {
+    bulkSummaryForm.addEventListener("submit", function(e){
+      var n = this.bulk_limit ? this.bulk_limit.value : "5";
+      if (!confirm("Jalankan summary untuk " + n + " file terbaru yang summarycode masih kosong?")) {
+        e.preventDefault();
+        resetBulkSummaryButton();
+        return false;
+      }
+      bulkSummaryButton.disabled = true;
+      bulkSummaryButton.textContent = "On Progressing";
+    });
+
+    window.addEventListener("pageshow", function(){
+      resetBulkSummaryButton();
+    });
+  }
+
   function openDialog(dlg, title, body){
     if (!dlg) return;
     var t = dlg.querySelector("[data-title]");
