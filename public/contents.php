@@ -81,7 +81,8 @@ function openai_chat(array $messages, array $opt = []): array
       "Authorization: Bearer " . $apiKey,
     ],
     CURLOPT_POSTFIELDS => json_encode($payload, JSON_UNESCAPED_UNICODE),
-    CURLOPT_TIMEOUT => 60,
+    CURLOPT_CONNECTTIMEOUT => 15,
+    CURLOPT_TIMEOUT => 180,
   ]);
 
   $raw = curl_exec($ch);
@@ -263,6 +264,9 @@ if ($app_id_filter > 0) {
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
   if (post_str("mode") === "bulk_summary") {
     try {
+      ignore_user_abort(true);
+      @set_time_limit(0);
+
       $bulkAppId = (int)post_str("bulk_app_id");
       $bulkModuleId = (int)post_str("bulk_module_id");
       $bulkLimit = (int)post_str("bulk_limit");
