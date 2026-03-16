@@ -261,13 +261,18 @@ if ($app_id_filter > 0) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-  if (post_str("mode") === "bulk_summary_5") {
+  if (post_str("mode") === "bulk_summary") {
     try {
       $bulkAppId = (int)post_str("bulk_app_id");
       $bulkModuleId = (int)post_str("bulk_module_id");
-      $res = summarize_latest_pending($pdo, 5, $bulkAppId, $bulkModuleId);
+      $bulkLimit = (int)post_str("bulk_limit");
+      $allowedBulkLimits = [5, 10, 15, 20];
+      if (!in_array($bulkLimit, $allowedBulkLimits, true)) {
+        $bulkLimit = 5;
+      }
+      $res = summarize_latest_pending($pdo, $bulkLimit, $bulkAppId, $bulkModuleId);
 
-      $msg = "Bulk summary selesai. selected {$res["selected"]}, updated {$res["updated"]}, failed {$res["failed"]}, skipped {$res["skipped"]}";
+      $msg = "Bulk summary {$bulkLimit} file selesai. selected {$res["selected"]}, updated {$res["updated"]}, failed {$res["failed"]}, skipped {$res["skipped"]}";
       if (!empty($res["updated_files"])) {
         $msg .= ". Updated files: " . implode(", ", $res["updated_files"]);
       }
@@ -603,12 +608,19 @@ $flash = flash_get();
 
   <div class="card">
     <h3>Automation</h3>
-    <div class="small" style="margin-bottom:10px">Summary 5 file terbaru dengan summary kosong di table contentcode.</div>
-    <form method="post" onsubmit="return confirm('Jalankan summary untuk 5 file terbaru yang summarycode masih kosong?')">
-      <input type="hidden" name="mode" value="bulk_summary_5">
+    <div class="small" style="margin-bottom:10px">Summary file terbaru dengan summary kosong di table contentcode. Bisa pilih 5, 10, 15, atau 20 file sekaligus.</div>
+    <form method="post" onsubmit="var n=this.bulk_limit.value; return confirm('Jalankan summary untuk ' + n + ' file terbaru yang summarycode masih kosong?');">
+      <input type="hidden" name="mode" value="bulk_summary">
       <input type="hidden" name="bulk_app_id" value="<?= (int)$app_id_filter ?>">
       <input type="hidden" name="bulk_module_id" value="<?= (int)$module_id_filter ?>">
-      <button class="btn primary" type="submit">Eksekusi Summary 5 File</button>
+      <label class="small" for="bulk_limit" style="display:block; margin-bottom:6px">Jumlah eksekusi summary</label>
+      <select id="bulk_limit" name="bulk_limit" style="margin-bottom:10px">
+        <option value="5">5 file</option>
+        <option value="10">10 file</option>
+        <option value="15">15 file</option>
+        <option value="20">20 file</option>
+      </select>
+      <button class="btn primary" type="submit">Eksekusi Summary</button>
     </form>
   </div>
 
